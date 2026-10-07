@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Reharmonization Workspace</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --bg-card: #334155;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            color: var(--text-main);
+        }
+
+        .header-title p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .github-link {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .github-link span {
+            color: var(--accent-blue);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .tab.active {
+            background-color: var(--accent-blue);
+            color: var(--bg-dark);
+        }
+
+        .tab:not(.active) {
+            background-color: var(--bg-panel);
+            color: var(--text-muted);
+        }
+
+        .workspace-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .workspace-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--bg-panel);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        /* Audio Import Section */
+        .import-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: var(--bg-dark);
+        }
+
+        .btn-success {
+            background-color: var(--accent-green);
+            color: var(--bg-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-red);
+            color: var(--text-main);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .file-status {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .analysis-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .analysis-box h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .analysis-box p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        select {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        /* Sections Bar */
+        .sections-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .section-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+        }
+
+        .section-pill.active {
+            background-color: var(--accent-blue);
+            color: var(--bg-dark);
+            border-color: var(--accent-blue);
+        }
+
+        /* Measure Grid */
+        .measure-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .measure-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .measure-card {
+            background-color: var(--bg-card);
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .measure-card.selected {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 1px var(--accent-blue);
+        }
+
+        .measure-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .measure-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chord-display {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .chord-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .chord-slot {
+            text-align: right;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        /* Glossary Column */
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .glossary-card {
+            background-color: var(--bg-card);
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .glossary-card h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .glossary-card ul {
+            list-style: none;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .glossary-card li {
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+
+        .glossary-card li:hover {
+            color: var(--text-main);
+        }
+
+        .tip-box {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background-color: rgba(56, 189, 248, 0.05);
+            border: 1px dashed var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+
+        .tip-box span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <h1>Song Reharmonization Workspace</h1>
+            <p>Advanced Harmonic Transformation Lab</p>
+        </div>
+        <div class="github-link">
+            GitHub Pages &middot; <span>patautrey/song-reharmonizer</span>
+        </div>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab active" onclick="switchTab('workspace')">LAB WORKSPACE</button>
+        <button class="tab" onclick="switchTab('glossary')">THEORY GLOSSARY</button>
+    </div>
+
+    <div id="workspace-tab" class="workspace-layout">
+        <!-- Left Column: Lab Workspace -->
+        <div>
+            <div class="panel">
+                <div class="panel-title">Audio Import</div>
+                <div class="import-row">
+                    <input type="file" id="audioFileInput" class="hidden" accept="audio/*" onchange="handleFileSelect(event)">
+                    <button class="btn btn-secondary" onclick="document.getElementById('audioFileInput').click()">Choose File</button>
+                    <span id="fileChosenLabel" class="file-status">No file chosen</span>
+                    <button class="btn btn-secondary" onclick="simulateAudioLoad()">Choose Audio File</button>
+                    <button class="btn btn-success" onclick="playAudio()">PLAY AUDIO FILE</button>
+                </div>
+                <div class="file-status" id="audioStatusText">No audio data loaded. System standby.</div>
+
+                <div class="analysis-box">
+                    <h3>Audio Analysis: G Major Arrangement Mapped</h3>
+                    <p id="activeTrackLabel">Active Track: Two Friends Together.wav</p>
+                </div>
+
+                <div class="controls-row">
+                    <label style="font-size: 0.8rem; color: var(--text-muted);">Instrument:</label>
+                    <select id="instrumentSelect">
+                        <option>Piano</option>
+                        <option>Acoustic Guitar</option>
+                    </select>
+                    <select id="voicingSelect">
+                        <option>Neutral</option>
+                        <option>Drop 2</option>
+                        <option>Upper Structure</option>
+                    </select>
+                    <button class="btn btn-success" onclick="playBase()">PLAY BASE</button>
+                </div>
+
+                <div class="controls-row" style="margin-top: 16px;">
+                    <button class="btn btn-primary" onclick="playReharm()">PLAY REHARM</button>
+                    <button class="btn btn-danger" onclick="stopPlayback()">STOP</button>
+                    <button class="btn btn-secondary" onclick="exportWav()">WAV</button>
+                    <button class="btn btn-secondary" onclick="exportMidi()">MIDI</button>
+                    <button class="btn btn-secondary" onclick="exportMusicXml()">MUSICXML</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Sections</div>
+                <div class="sections-bar" id="sectionsBar">
+                    <div class="section-pill active" onclick="selectSection('INTRO')">INTRO</div>
+                    <div class="section-pill" onclick="selectSection('VERSE 1')">VERSE 1</div>
+                    <div class="section-pill" onclick="selectSection('PRE-CHORUS')">PRE-CHORUS</div>
+                    <div class="section-pill" onclick="selectSection('CHORUS')">CHORUS</div>
+                    <div class="section-pill" onclick="selectSection('BRIDGE')">BRIDGE</div>
+                    <div class="section-pill" onclick="selectSection('OUTRO')">OUTRO</div>
+                </div>
+
+                <div class="measure-grid" id="measureGrid">
+                    <!-- Measures populated via JS -->
+                </div>
+
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px;">
+                    Click chord blocks above to map adjustments. Select a range, then choose a chord from the palette and commit changes. Or let the system propose a reharm for the current section.
+                </p>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" onclick="suggestReharm()">SUGGEST REHARM FOR SECTION</button>
+                    <button class="btn btn-success" onclick="commitChanges()">COMMIT RANGE CHANGES</button>
+                    <button class="btn btn-danger" onclick="clearHighlights()">CLEAR HIGHLIGHTS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Theory Glossary Reference -->
+        <div>
+            <div class="panel">
+                <div class="panel-title">Theory Glossary</div>
+                
+                <div class="glossary-grid">
+                    <div class="glossary-card">
+                        <h4>Dominant Alterations</h4>
+                        <ul>
+                            <li>Tritone Substitution</li>
+                            <li>Secondary Dominants</li>
+                            <li>Chromatic Dominants</li>
+                            <li>Backdoor Dominant</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card">
+                        <h4>Modal & Voicing Textures</h4>
+                        <ul>
+                            <li>Modal Parallel Borrowing</li>
+                            <li>Planing / Parallelism</li>
+                            <li>Poly Chords</li>
+                            <li>Upper Structures</li>
+                            <li>Drop 2 Voicing</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card">
+                        <h4>Passing & Functional Shifts</h4>
+                        <ul>
+                            <li>Diminished Passing Chords</li>
+                            <li>Diatonic Substitution</li>
+                            <li>Relative Chord Intercept</li>
+                            <li>Harmonic Prolongation</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card">
+                        <h4>Voice Leading & Basslines</h4>
+                        <ul>
+                            <li>Pedal Tones</li>
+                            <li>Bass Walk-Ups</li>
+                            <li>Bass Walk-Downs</li>
+                            <li>Inversions (Slash Chords)</li>
+                            <li>Non-Chord Tones</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card">
+                        <h4>Turnarounds & Root Paths</h4>
+                        <ul>
+                            <li>Circle of 5ths Cycle</li>
+                            <li>Standard Turnaround</li>
+                            <li>ii-V-I & ii°-V7-i Cadences</li>
+                            <li>iii-vi-ii-V-I Extended Chain</li>
+                            <li>Andalusian Progression</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card">
+                        <h4>Color, Extensions & Cadences</h4>
+                        <ul>
+                            <li>Extensions (9ths, 11ths, 13ths)</li>
+                            <li>Suspended (sus4 / sus2)</li>
+                            <li>Perfect Authentic Cadence</li>
+                            <li>Plagal Cadence (Amen Close)</li>
+                            <li>Half Cadence Break</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="glossary-card" style="margin-top: 12px;">
+                    <h4>Figured Bass Inversions</h4>
+                    <ul>
+                        <li>Figured Bass: 6 (Root Triad Inv)</li>
+                        <li>Figured Bass: 6/4 (Second Inv)</li>
+                        <li>Figured Bass: 4/3 (7th Chord 2nd Inv)</li>
+                        <li>Figured Bass: 5/2 (7th Chord 3rd Inv)</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box">
+                    <span>Tip:</span> Click a theory item, then click a chord block to tag that measure with the selected concept in the reharm path.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data model for measures by section
+        const sectionData = {
+            'INTRO': [
+                { m: 1, base: 'G', reharm: 'G' },
+                { m: 2, base: 'Em', reharm: 'Em' },
+                { m: 3, base: 'C', reharm: 'C' },
+                { m: 4, base: 'D', reharm: 'D' },
+                { m: 5, base: 'G', reharm: 'G' },
+                { m: 6, base: 'Em', reharm: 'Em' },
+                { m: 7, base: 'C', reharm: 'C' },
+                { m: 8, base: 'B7', reharm: 'B7' }
+            ],
+            'VERSE 1': [
+                { m: 1, base: 'G', reharm: 'Gmaj7' },
+                { m: 2, base: 'Bm', reharm: 'Bm7' },
+                { m: 3, base: 'C', reharm: 'Cmaj9' },
+                { m: 4, base: 'D7', reharm: 'D9' },
+                { m: 5, base: 'G', reharm: 'G6' },
+                { m: 6, base: 'Am', reharm: 'AonC#' },
+                { m: 7, base: 'C/D', reharm: 'D13' },
+                { m: 8, base: 'G', reharm: 'G' }
+            ],
+            'PRE-CHORUS': [
+                { m: 1, base: 'Am', reharm: 'Am9' },
+                { m: 2, base: 'D', reharm: 'D7alt' },
+                { m: 3, base: 'G', reharm: 'Gmaj7' },
+                { m: 4, base: 'E7', reharm: 'E7#9' },
+                { m: 5, base: 'Am', reharm: 'F#m7b5' },
+                { m: 6, base: 'B7', reharm: 'B7b9' },
+                { m: 7, base: 'Em', reharm: 'Em9' },
+                { m: 8, base: 'D', reharm: 'D11' }
+            ],
+            'CHORUS': [
+                { m: 1, base: 'C', reharm: 'Cmaj7' },
+                { m: 2, base: 'D', reharm: 'Bm7' },
+                { m: 3, base: 'Em', reharm: 'Cmaj9' },
+                { m: 4, base: 'G', reharm: 'Am7' },
+                { m: 5, base: 'C', reharm: 'F#m7b5' },
+                { m: 6, base: 'D', reharm: 'B7' },
+                { m: 7, base: 'G', reharm: 'Em' },
+                { m: 8, base: 'G', reharm: 'G' }
+            ],
+            'BRIDGE': [
+                { m: 1, base: 'Am', reharm: 'Fmaj7' },
+                { m: 2, base: 'D', reharm: 'Bbmaj7' },
+                { m: 3, base: 'Bm', reharm: 'Ebmaj7' },
+                { m: 4, base: 'Em', reharm: 'Abmaj7' },
+                { m: 5, base: 'C', reharm: 'Am7' },
+                { m: 6, base: 'C#dim', reharm: 'C#dim7' },
+                { m: 7, base: 'D', reharm: 'D7' },
+                { m: 8, base: 'D7', reharm: 'D13' }
+            ],
+            'OUTRO': [
+                { m: 1, base: 'G', reharm: 'Gmaj9' },
+                { m: 2, base: 'C', reharm: 'Cm6' },
+                { m: 3, base: 'G', reharm: 'Gmaj7' },
+                { m: 4, base: 'G', reharm: 'G6/9' },
+                { m: 5, base: '-', reharm: '-' },
+                { m: 6, base: '-', reharm: '-' },
+                { m: 7, base: '-', reharm: '-' },
+                { m: 8, base: 'G', reharm: 'G' }
+            ]
+        };
+
+        let currentSection = 'INTRO';
+        let selectedMeasureIndex = null;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            if (tabName === 'workspace') {
+                event.target.classList.add('active');
+            } else {
+                event.target.classList.add('active');
+            }
+        }
+
+        function selectSection(sectionName) {
+            currentSection = sectionName;
+            document.querySelectorAll('.section-pill').forEach(pill => {
+                if (pill.textContent === sectionName) {
+                    pill.classList.add('active');
+                } else {
+                    pill.classList.remove('active');
+                }
+            });
+            renderMeasures();
+        }
+
+        function renderMeasures() {
+            const grid = document.getElementById('measureGrid');
+            grid.innerHTML = '';
+            const measures = sectionData[currentSection];
+
+            measures.forEach((m, idx) => {
+                const card = document.createElement('div');
+                card.className = `measure-card ${selectedMeasureIndex === idx ? 'selected' : ''}`;
+                card.onclick = () => selectMeasure(idx);
+                card.innerHTML = `
+                    <div class="measure-header">
+                        <span>M.${m.m}</span>
+                        <span>${currentSection}</span>
+                    </div>
+                    <div class="measure-body">
+                        <div>
+                            <div class="chord-label">Base</div>
+                            <div class="chord-display">${m.base}</div>
+                        </div>
+                        <div class="chord-slot">
+                            <div class="chord-label">Reharm</div>
+                            <div class="chord-display" style="color: var(--accent-blue);">${m.reharm}</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectMeasure(idx) {
+            selectedMeasureIndex = idx;
+            renderMeasures();
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileChosenLabel').textContent = file.name;
+                document.getElementById('audioStatusText').textContent = `Loaded file: ${file.name}. Ready for processing.`;
+                document.getElementById('activeTrackLabel').textContent = `Active Track: ${file.name}`;
+            }
+        }
+
+        function simulateAudioLoad() {
+            document.getElementById('fileChosenLabel').textContent = 'Two Friends Together.wav';
+            document.getElementById('audioStatusText').textContent = 'Audio file loaded successfully. System online.';
+        }
+
+        function playAudio() {
+            alert('Playing active audio track...');
+        }
+
+        function playBase() {
+            alert(`Playing Base progression for ${currentSection}...`);
+        }
+
+        function playReharm() {
+            alert(`Playing Reharmonized progression for ${currentSection}...`);
+        }
+
+        function stopPlayback() {
+            alert('Playback stopped.');
+        }
+
+        function exportWav() {
+            alert('Rendering and exporting WAV file...');
+        }
+
+        // MIDI File Export Generator (Standard Type 0 MIDI file)
+        function exportMidi() {
+            const chords = sectionData[currentSection];
+            
+            // Helper to convert MIDI byte lengths
+            function writeVarLen(value) {
+                let buffer = [];
+                buffer.push(value & 0x7F);
+                value >>= 7;
+                while (value > 0) {
+                    buffer.unshift((value & 0x7F) | 0x80);
+                    value >>= 7;
+                }
+                return buffer;
+            }
+
+            // Basic chord to MIDI root note mapping
+            const noteMap = { 'C': 60, 'C#': 61, 'Db': 61, 'D': 62, 'D#': 63, 'Eb': 63, 'E': 64, 'F': 65, 'F#': 66, 'Gb': 66, 'G': 67, 'G#': 68, 'Ab': 68, 'A': 69, 'A#': 70, 'Bb': 70, 'B': 71 };
+            
+            function getChordNotes(chordStr) {
+                if (!chordStr || chordStr === '-') return [60, 64, 67]; // Default C major
+                let rootMatch = chordStr.match(/^[A-G][b#]*/);
+                let root = rootMatch ? rootMatch[0] : 'C';
+                let baseNote = noteMap[root] || 60;
+                // Basic triad construction based on chord name
+                if (chordStr.includes('m') && !chordStr.includes('maj')) {
+                    return [baseNote - 12, baseNote, baseNote + 3, baseNote + 7];
+                } else if (chordStr.includes('dim')) {
+                    return [baseNote - 12, baseNote, baseNote + 3, baseNote + 6];
+                } else {
+                    return [baseNote - 12, baseNote, baseNote + 4, baseNote + 7];
+                }
+            }
+
+            // Build MIDI Track Events
+            let trackEvents = [];
+            // Tempo: 120 bpm (500,000 microseconds per quarter note)
+            trackEvents.push(0x00, 0xFF, 0x51, 0x03, 0x07, 0xA1, 0x20);
+
+            chords.forEach(c => {
+                let notes = getChordNotes(c.reharm);
+                // Note On for chord notes
+                notes.forEach((note, idx) => {
+                    let delta = (idx === 0) ? 0 : 0;
+                    trackEvents.push(...writeVarLen(delta));
+                    trackEvents.push(0x90, note, 90);
+                });
+                // Hold for 480 ticks (1 beat / measure step)
+                let durationTicks = 480;
+                notes.forEach((note, idx) => {
+                    let delta = (idx === 0) ? durationTicks : 0;
+                    trackEvents.push(...writeVarLen(delta));
+                    trackEvents.push(0x80, note, 0);
+                });
+            });
+
+            // End of Track meta event
+            trackEvents.push(0x00, 0xFF, 0x2F, 0x00);
+
+            // MIDI Header Chunk (MThd)
+            let midiHeader = [
+                0x4D, 0x54, 0x68, 0x64, // MThd
+                0x00, 0x00, 0x00, 0x06, // Header length (6)
+                0x00, 0x00,             // Format 0 (single track)
+                0x00, 0x01,             // Number of tracks (1)
+                0x01, 0xE0              // Division (480 ticks per quarter note)
+            ];
+
+            // MIDI Track Chunk (MTrk)
+            let trackLen = trackEvents.length;
+            let midiTrack = [
+                0x4D, 0x54, 0x72, 0x6B, // MTrk
+                (trackLen >> 24) & 0xFF,
+                (trackLen >> 16) & 0xFF,
+                (trackLen >> 8) & 0xFF,
+                trackLen & 0xFF,
+                ...trackEvents
+            ];
+
+            let midiFileByteArray = new Uint8Array([...midiHeader, ...midiTrack]);
+            let blob = new Blob([midiFileByteArray], { type: 'audio/midi' });
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `${currentSection.toLowerCase()}_reharm.mid`;
+            link.click();
+        }
+
+        function exportMusicXml() {
+            alert('Exporting MusicXML file...');
+        }
+
+        function suggestReharm() {
+            alert(`Generating intelligent reharmonization suggestions for ${currentSection}...`);
+        }
+
+        function commitChanges() {
+            if (selectedMeasureIndex !== null) {
+                alert(`Committed changes for measure ${selectedMeasureIndex + 1} in ${currentSection}.`);
+            } else {
+                alert('Please select a measure block to commit changes.');
+            }
+        }
+
+        function clearHighlights() {
+            selectedMeasureIndex = null;
+            renderMeasures();
+        }
+
+        // Initial render on load
+        window.onload = function() {
+            renderMeasures();
+        };
+    </script>
+</body>
+</html>
