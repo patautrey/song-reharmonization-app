@@ -301,6 +301,12 @@
             gap: 12px;
         }
 
+        @media (max-width: 768px) {
+            .glossary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .glossary-card {
             background-color: var(--bg-card);
             border-radius: 6px;
@@ -361,16 +367,16 @@
             <p>Advanced Harmonic Transformation Lab</p>
         </div>
         <div class="github-link">
-            GitHub Pages &middot; <span>patautrey/song-reharmonizer</span>
+            GitHub Pages &middot; <span>patautrey/song-reharmonization-app</span>
         </div>
     </header>
 
     <div class="nav-tabs">
-        <button class="tab active" onclick="switchTab('workspace')">LAB WORKSPACE</button>
-        <button class="tab" onclick="switchTab('glossary')">THEORY GLOSSARY</button>
+        <button id="tab-workspace" class="tab active" onclick="switchTab('workspace')">LAB WORKSPACE</button>
+        <button id="tab-glossary" class="tab" onclick="switchTab('glossary')">THEORY GLOSSARY</button>
     </div>
 
-    <div id="workspace-tab" class="workspace-layout">
+    <div id="workspace-view" class="workspace-layout">
         <!-- Left Column: Lab Workspace -->
         <div>
             <div class="panel">
@@ -439,8 +445,8 @@
             </div>
         </div>
 
-        <!-- Right Column: Theory Glossary Reference -->
-        <div>
+        <!-- Right Column: Theory Glossary Reference (Desktop view) -->
+        <div id="sidebar-glossary">
             <div class="panel">
                 <div class="panel-title">Theory Glossary</div>
                 
@@ -522,8 +528,86 @@
         </div>
     </div>
 
+    <!-- Dedicated Full-Screen Glossary View container -->
+    <div id="glossary-view" class="hidden">
+        <div class="panel">
+            <div class="panel-title">Advanced Theory Glossary & Reference Hub</div>
+            <div class="glossary-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="glossary-card">
+                    <h4>Dominant Alterations</h4>
+                    <ul>
+                        <li>Tritone Substitution</li>
+                        <li>Secondary Dominants</li>
+                        <li>Chromatic Dominants</li>
+                        <li>Backdoor Dominant</li>
+                    </ul>
+                </div>
+                <div class="glossary-card">
+                    <h4>Modal & Voicing Textures</h4>
+                    <ul>
+                        <li>Modal Parallel Borrowing</li>
+                        <li>Planing / Parallelism</li>
+                        <li>Poly Chords</li>
+                        <li>Upper Structures</li>
+                        <li>Drop 2 Voicing</li>
+                    </ul>
+                </div>
+                <div class="glossary-card">
+                    <h4>Passing & Functional Shifts</h4>
+                    <ul>
+                        <li>Diminished Passing Chords</li>
+                        <li>Diatonic Substitution</li>
+                        <li>Relative Chord Intercept</li>
+                        <li>Harmonic Prolongation</li>
+                    </ul>
+                </div>
+                <div class="glossary-card">
+                    <h4>Voice Leading & Basslines</h4>
+                    <ul>
+                        <li>Pedal Tones</li>
+                        <li>Bass Walk-Ups</li>
+                        <li>Bass Walk-Downs</li>
+                        <li>Inversions (Slash Chords)</li>
+                        <li>Non-Chord Tones</li>
+                    </ul>
+                </div>
+                <div class="glossary-card">
+                    <h4>Turnarounds & Root Paths</h4>
+                    <ul>
+                        <li>Circle of 5ths Cycle</li>
+                        <li>Standard Turnaround</li>
+                        <li>ii-V-I & ii°-V7-i Cadences</li>
+                        <li>iii-vi-ii-V-I Extended Chain</li>
+                        <li>Andalusian Progression</li>
+                    </ul>
+                </div>
+                <div class="glossary-card">
+                    <h4>Color, Extensions & Cadences</h4>
+                    <ul>
+                        <li>Extensions (9ths, 11ths, 13ths)</li>
+                        <li>Suspended (sus4 / sus2)</li>
+                        <li>Perfect Authentic Cadence</li>
+                        <li>Plagal Cadence (Amen Close)</li>
+                        <li>Half Cadence Break</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="glossary-card" style="margin-top: 16px;">
+                <h4>Figured Bass Inversions</h4>
+                <ul>
+                    <li>Figured Bass: 6 (Root Triad Inv)</li>
+                    <li>Figured Bass: 6/4 (Second Inv)</li>
+                    <li>Figured Bass: 4/3 (7th Chord 2nd Inv)</li>
+                    <li>Figured Bass: 5/2 (7th Chord 3rd Inv)</li>
+                </ul>
+            </div>
+            <div class="tip-box">
+                <span>Interactive Reference:</span> Use this dedicated view to review all master harmony rules, voice-leading paths, and structural transformations while working through your arrangements.
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Data model for measures by section
         const sectionData = {
             'INTRO': [
                 { m: 1, base: 'G', reharm: 'G' },
@@ -591,11 +675,21 @@
         let selectedMeasureIndex = null;
 
         function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const workspaceView = document.getElementById('workspace-view');
+            const glossaryView = document.getElementById('glossary-view');
+            const tabWorkspace = document.getElementById('tab-workspace');
+            const tabGlossary = document.getElementById('tab-glossary');
+
             if (tabName === 'workspace') {
-                event.target.classList.add('active');
+                workspaceView.classList.remove('hidden');
+                glossaryView.classList.add('hidden');
+                tabWorkspace.classList.add('active');
+                tabGlossary.classList.remove('active');
             } else {
-                event.target.classList.add('active');
+                workspaceView.classList.add('hidden');
+                glossaryView.classList.remove('hidden');
+                tabGlossary.classList.add('active');
+                tabWorkspace.classList.remove('active');
             }
         }
 
@@ -679,11 +773,8 @@
             alert('Rendering and exporting WAV file...');
         }
 
-        // MIDI File Export Generator (Standard Type 0 MIDI file)
         function exportMidi() {
             const chords = sectionData[currentSection];
-            
-            // Helper to convert MIDI byte lengths
             function writeVarLen(value) {
                 let buffer = [];
                 buffer.push(value & 0x7F);
@@ -695,15 +786,13 @@
                 return buffer;
             }
 
-            // Basic chord to MIDI root note mapping
             const noteMap = { 'C': 60, 'C#': 61, 'Db': 61, 'D': 62, 'D#': 63, 'Eb': 63, 'E': 64, 'F': 65, 'F#': 66, 'Gb': 66, 'G': 67, 'G#': 68, 'Ab': 68, 'A': 69, 'A#': 70, 'Bb': 70, 'B': 71 };
             
             function getChordNotes(chordStr) {
-                if (!chordStr || chordStr === '-') return [60, 64, 67]; // Default C major
+                if (!chordStr || chordStr === '-') return [60, 64, 67];
                 let rootMatch = chordStr.match(/^[A-G][b#]*/);
                 let root = rootMatch ? rootMatch[0] : 'C';
                 let baseNote = noteMap[root] || 60;
-                // Basic triad construction based on chord name
                 if (chordStr.includes('m') && !chordStr.includes('maj')) {
                     return [baseNote - 12, baseNote, baseNote + 3, baseNote + 7];
                 } else if (chordStr.includes('dim')) {
@@ -713,20 +802,16 @@
                 }
             }
 
-            // Build MIDI Track Events
             let trackEvents = [];
-            // Tempo: 120 bpm (500,000 microseconds per quarter note)
             trackEvents.push(0x00, 0xFF, 0x51, 0x03, 0x07, 0xA1, 0x20);
 
             chords.forEach(c => {
                 let notes = getChordNotes(c.reharm);
-                // Note On for chord notes
                 notes.forEach((note, idx) => {
                     let delta = (idx === 0) ? 0 : 0;
                     trackEvents.push(...writeVarLen(delta));
                     trackEvents.push(0x90, note, 90);
                 });
-                // Hold for 480 ticks (1 beat / measure step)
                 let durationTicks = 480;
                 notes.forEach((note, idx) => {
                     let delta = (idx === 0) ? durationTicks : 0;
@@ -735,22 +820,19 @@
                 });
             });
 
-            // End of Track meta event
             trackEvents.push(0x00, 0xFF, 0x2F, 0x00);
 
-            // MIDI Header Chunk (MThd)
             let midiHeader = [
-                0x4D, 0x54, 0x68, 0x64, // MThd
-                0x00, 0x00, 0x00, 0x06, // Header length (6)
-                0x00, 0x00,             // Format 0 (single track)
-                0x00, 0x01,             // Number of tracks (1)
-                0x01, 0xE0              // Division (480 ticks per quarter note)
+                0x4D, 0x54, 0x68, 0x64,
+                0x00, 0x00, 0x00, 0x06,
+                0x00, 0x00,
+                0x00, 0x01,
+                0x01, 0xE0
             ];
 
-            // MIDI Track Chunk (MTrk)
             let trackLen = trackEvents.length;
             let midiTrack = [
-                0x4D, 0x54, 0x72, 0x6B, // MTrk
+                0x4D, 0x54, 0x72, 0x6B,
                 (trackLen >> 24) & 0xFF,
                 (trackLen >> 16) & 0xFF,
                 (trackLen >> 8) & 0xFF,
@@ -787,7 +869,6 @@
             renderMeasures();
         }
 
-        // Initial render on load
         window.onload = function() {
             renderMeasures();
         };
