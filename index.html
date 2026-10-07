@@ -294,7 +294,7 @@
             flex-wrap: wrap;
         }
 
-        /* Glossary Column & View */
+        /* Glossary Column & Grid */
         .glossary-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -310,31 +310,31 @@
         .glossary-card {
             background-color: var(--bg-card);
             border-radius: 6px;
-            padding: 14px;
+            padding: 12px;
             border: 1px solid var(--border-color);
             margin-bottom: 12px;
         }
 
         .glossary-card h4 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--accent-blue);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             letter-spacing: 0.05em;
         }
 
         .glossary-card ul {
             list-style: none;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
         .glossary-card li {
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 4px;
+            padding: 2px 4px;
+            border-radius: 3px;
             transition: background 0.2s, color 0.2s;
         }
 
@@ -345,24 +345,24 @@
 
         /* Definition Display Box */
         .definition-panel {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             border: 1px solid var(--accent-blue);
             border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 16px;
+            margin-top: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         .definition-panel h3 {
             color: var(--accent-blue);
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+            font-size: 1rem;
+            margin-bottom: 6px;
         }
 
         .definition-panel p {
             color: var(--text-main);
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
 
         .tip-box {
@@ -469,30 +469,89 @@
             </div>
         </div>
 
-        <!-- Right Column Sidebar Glossary -->
+        <!-- Right Column Sidebar Glossary (Restored Full 7 Categories) -->
         <div>
             <div class="panel">
                 <div class="panel-title">Theory Glossary</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">Click any item to view its definition:</div>
                 
-                <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
                     <div class="glossary-card" style="margin-bottom:0;">
                         <h4>Dominant Alterations</h4>
-                        <ul id="sidebar-glossary-list-1"></ul>
+                        <ul>
+                            <li onclick="showDefinition('Tritone Substitution')">Tritone Substitution</li>
+                            <li onclick="showDefinition('Secondary Dominants')">Secondary Dominants</li>
+                            <li onclick="showDefinition('Chromatic Dominants')">Chromatic Dominants</li>
+                            <li onclick="showDefinition('Backdoor Dominant')">Backdoor Dominant</li>
+                        </ul>
                     </div>
                     <div class="glossary-card" style="margin-bottom:0;">
-                        <h4>Modal & Voicing</h4>
-                        <ul id="sidebar-glossary-list-2"></ul>
+                        <h4>Modal & Voicing Textures</h4>
+                        <ul>
+                            <li onclick="showDefinition('Modal Parallel Borrowing')">Modal Parallel Borrowing</li>
+                            <li onclick="showDefinition('Planing / Parallelism')">Planing / Parallelism</li>
+                            <li onclick="showDefinition('Poly Chords')">Poly Chords</li>
+                            <li onclick="showDefinition('Upper Structures')">Upper Structures</li>
+                            <li onclick="showDefinition('Drop 2 Voicing')">Drop 2 Voicing</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Passing & Functional Shifts</h4>
+                        <ul>
+                            <li onclick="showDefinition('Diminished Passing Chords')">Diminished Passing Chords</li>
+                            <li onclick="showDefinition('Diatonic Substitution')">Diatonic Substitution</li>
+                            <li onclick="showDefinition('Relative Chord Intercept')">Relative Chord Intercept</li>
+                            <li onclick="showDefinition('Harmonic Prolongation')">Harmonic Prolongation</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Voice Leading & Basslines</h4>
+                        <ul>
+                            <li onclick="showDefinition('Pedal Tones')">Pedal Tones</li>
+                            <li onclick="showDefinition('Bass Walk-Ups')">Bass Walk-Ups</li>
+                            <li onclick="showDefinition('Bass Walk-Downs')">Bass Walk-Downs</li>
+                            <li onclick="showDefinition('Inversions (Slash Chords)')">Inversions (Slash Chords)</li>
+                            <li onclick="showDefinition('Non-Chord Tones')">Non-Chord Tones</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Turnarounds & Root Paths</h4>
+                        <ul>
+                            <li onclick="showDefinition('Circle of 5ths Cycle')">Circle of 5ths Cycle</li>
+                            <li onclick="showDefinition('Standard Turnaround')">Standard Turnaround</li>
+                            <li onclick="showDefinition('ii-V-I & ii°-V7-i Cadences')">ii-V-I & ii°-V7-i Cadences</li>
+                            <li onclick="showDefinition('iii-vi-ii-V-I Extended Chain')">iii-vi-ii-V-I Extended Chain</li>
+                            <li onclick="showDefinition('Andalusian Progression')">Andalusian Progression</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Color, Extensions & Cadences</h4>
+                        <ul>
+                            <li onclick="showDefinition('Extensions (9ths, 11ths, 13ths)')">Extensions (9ths, 11ths, 13ths)</li>
+                            <li onclick="showDefinition('Suspended (sus4 / sus2)')">Suspended (sus4 / sus2)</li>
+                            <li onclick="showDefinition('Perfect Authentic Cadence')">Perfect Authentic Cadence</li>
+                            <li onclick="showDefinition('Plagal Cadence (Amen Close)')">Plagal Cadence (Amen Close)</li>
+                            <li onclick="showDefinition('Half Cadence Break')">Half Cadence Break</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Figured Bass Inversions</h4>
+                        <ul>
+                            <li onclick="showDefinition('Figured Bass: 6 (Root Triad Inv)')">Figured Bass: 6 (Root Triad Inv)</li>
+                            <li onclick="showDefinition('Figured Bass: 6/4 (Second Inv)')">Figured Bass: 6/4 (Second Inv)</li>
+                            <li onclick="showDefinition('Figured Bass: 4/3 (7th Chord 2nd Inv)')">Figured Bass: 4/3 (7th Chord 2nd Inv)</li>
+                            <li onclick="showDefinition('Figured Bass: 5/2 (7th Chord 3rd Inv)')">Figured Bass: 5/2 (7th Chord 3rd Inv)</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div id="sidebar-definition" class="definition-panel hidden" style="margin-top: 12px; padding: 12px;">
-                    <h3 id="sidebar-def-title" style="font-size: 0.95rem;">Select an item</h3>
-                    <p id="sidebar-def-text" style="font-size: 0.8rem;">Click a theory term above to see its harmonic definition.</p>
+                <!-- Sidebar Interactive Definition Display Box -->
+                <div id="sidebar-definition" class="definition-panel hidden">
+                    <h3 id="sidebar-def-title">Term</h3>
+                    <p id="sidebar-def-text">Definition text.</p>
                 </div>
 
                 <div class="tip-box">
-                    <span>Tip:</span> Switch to the top <b>Theory Glossary</b> tab for the complete master reference view.
+                    <span>Tip:</span> Click any theory item above to view its definition.
                 </div>
             </div>
         </div>
@@ -509,7 +568,7 @@
             <div class="glossary-grid">
                 <div class="glossary-card">
                     <h4>Dominant Alterations</h4>
-                    <ul id="glossary-col-1">
+                    <ul>
                         <li onclick="showDefinition('Tritone Substitution')">Tritone Substitution</li>
                         <li onclick="showDefinition('Secondary Dominants')">Secondary Dominants</li>
                         <li onclick="showDefinition('Chromatic Dominants')">Chromatic Dominants</li>
@@ -518,7 +577,7 @@
                 </div>
                 <div class="glossary-card">
                     <h4>Modal & Voicing Textures</h4>
-                    <ul id="glossary-col-2">
+                    <ul>
                         <li onclick="showDefinition('Modal Parallel Borrowing')">Modal Parallel Borrowing</li>
                         <li onclick="showDefinition('Planing / Parallelism')">Planing / Parallelism</li>
                         <li onclick="showDefinition('Poly Chords')">Poly Chords</li>
@@ -528,7 +587,7 @@
                 </div>
                 <div class="glossary-card">
                     <h4>Passing & Functional Shifts</h4>
-                    <ul id="glossary-col-3">
+                    <ul>
                         <li onclick="showDefinition('Diminished Passing Chords')">Diminished Passing Chords</li>
                         <li onclick="showDefinition('Diatonic Substitution')">Diatonic Substitution</li>
                         <li onclick="showDefinition('Relative Chord Intercept')">Relative Chord Intercept</li>
@@ -537,7 +596,7 @@
                 </div>
                 <div class="glossary-card">
                     <h4>Voice Leading & Basslines</h4>
-                    <ul id="glossary-col-4">
+                    <ul>
                         <li onclick="showDefinition('Pedal Tones')">Pedal Tones</li>
                         <li onclick="showDefinition('Bass Walk-Ups')">Bass Walk-Ups</li>
                         <li onclick="showDefinition('Bass Walk-Downs')">Bass Walk-Downs</li>
@@ -547,7 +606,7 @@
                 </div>
                 <div class="glossary-card">
                     <h4>Turnarounds & Root Paths</h4>
-                    <ul id="glossary-col-5">
+                    <ul>
                         <li onclick="showDefinition('Circle of 5ths Cycle')">Circle of 5ths Cycle</li>
                         <li onclick="showDefinition('Standard Turnaround')">Standard Turnaround</li>
                         <li onclick="showDefinition('ii-V-I & ii°-V7-i Cadences')">ii-V-I & ii°-V7-i Cadences</li>
@@ -557,7 +616,7 @@
                 </div>
                 <div class="glossary-card">
                     <h4>Color, Extensions & Cadences</h4>
-                    <ul id="glossary-col-6">
+                    <ul>
                         <li onclick="showDefinition('Extensions (9ths, 11ths, 13ths)')">Extensions (9ths, 11ths, 13ths)</li>
                         <li onclick="showDefinition('Suspended (sus4 / sus2)')">Suspended (sus4 / sus2)</li>
                         <li onclick="showDefinition('Perfect Authentic Cadence')">Perfect Authentic Cadence</li>
@@ -569,7 +628,7 @@
 
             <div class="glossary-card" style="margin-top: 16px;">
                 <h4>Figured Bass Inversions</h4>
-                <ul style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;" id="glossary-col-7">
+                <ul style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
                     <li onclick="showDefinition('Figured Bass: 6 (Root Triad Inv)')">Figured Bass: 6 (Root Triad Inv)</li>
                     <li onclick="showDefinition('Figured Bass: 6/4 (Second Inv)')">Figured Bass: 6/4 (Second Inv)</li>
                     <li onclick="showDefinition('Figured Bass: 4/3 (7th Chord 2nd Inv)')">Figured Bass: 4/3 (7th Chord 2nd Inv)</li>
@@ -577,20 +636,15 @@
                 </ul>
             </div>
 
-            <!-- Interactive Definition Display Box -->
+            <!-- Main Interactive Definition Display Box -->
             <div id="main-definition-panel" class="definition-panel hidden">
                 <h3 id="def-title">Definition Title</h3>
                 <p id="def-text">Definition text goes here.</p>
-            </div>
-
-            <div class="tip-box">
-                <span>Interactive Reference:</span> Click any theory term above to review its harmonic definition, voice-leading rules, and reharmonization behavior.
             </div>
         </div>
     </div>
 
     <script>
-        // Comprehensive Harmony Dictionary
         const harmonicDefinitions = {
             "Tritone Substitution": "Replacing a dominant 7th chord with another dominant 7th chord whose root is a tritone (augmented 4th) away. Both share the same tritone interval guide tones, creating smooth chromatic bass motion (e.g., G7 to Db7 resolving to C).",
             "Secondary Dominants": "A dominant 7th chord that resolves to a diatonic scale degree other than the tonic (e.g., V7/ii, V7/V). It temporarily tonicizes a target chord, adding strong directional pull.",
@@ -712,15 +766,27 @@
         }
 
         function showDefinition(term) {
-            const panel = document.getElementById('main-definition-panel');
-            const title = document.getElementById('def-title');
-            const text = document.getElementById('def-text');
+            // Sidebar definition box
+            const sidebarPanel = document.getElementById('sidebar-definition');
+            const sidebarTitle = document.getElementById('sidebar-def-title');
+            const sidebarText = document.getElementById('sidebar-def-text');
+
+            // Main view definition box
+            const mainPanel = document.getElementById('main-definition-panel');
+            const mainTitle = document.getElementById('def-title');
+            const mainText = document.getElementById('def-text');
 
             if (harmonicDefinitions[term]) {
-                title.textContent = term;
-                text.textContent = harmonicDefinitions[term];
-                panel.classList.remove('hidden');
-                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                if(sidebarTitle && sidebarText && sidebarPanel) {
+                    sidebarTitle.textContent = term;
+                    sidebarText.textContent = harmonicDefinitions[term];
+                    sidebarPanel.classList.remove('hidden');
+                }
+                if(mainTitle && mainText && mainPanel) {
+                    mainTitle.textContent = term;
+                    mainText.textContent = harmonicDefinitions[term];
+                    mainPanel.classList.remove('hidden');
+                }
             }
         }
 
@@ -832,7 +898,7 @@
                 notes.forEach(note => {
                     trackEvents.push(...writeVarLen(durationTicks));
                     trackEvents.push(0x80, note, 0);
-                    durationTicks = 0; // subsequent off events delta 0
+                    durationTicks = 0;
                 });
             });
 
@@ -862,32 +928,6 @@
 
         window.onload = function() {
             renderMeasures();
-            // Populate sidebar list items with click handlers too
-            const keys = Object.keys(harmonicDefinitions);
-            const list1 = document.getElementById('sidebar-glossary-list-1');
-            const list2 = document.getElementById('sidebar-glossary-list-2');
-            if(list1 && list2) {
-                keys.slice(0, 4).forEach(k => {
-                    let li = document.createElement('li');
-                    li.textContent = k;
-                    li.onclick = () => {
-                        document.getElementById('sidebar-definition').classList.remove('hidden');
-                        document.getElementById('sidebar-def-title').textContent = k;
-                        document.getElementById('sidebar-def-text').textContent = harmonicDefinitions[k];
-                    };
-                    list1.appendChild(li);
-                });
-                keys.slice(4, 9).forEach(k => {
-                    let li = document.createElement('li');
-                    li.textContent = k;
-                    li.onclick = () => {
-                        document.getElementById('sidebar-definition').classList.remove('hidden');
-                        document.getElementById('sidebar-def-title').textContent = k;
-                        document.getElementById('sidebar-def-text').textContent = harmonicDefinitions[k];
-                    };
-                    list2.appendChild(li);
-                });
-            }
         };
     </script>
 </body>
