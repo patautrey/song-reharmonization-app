@@ -381,6 +381,8 @@
             padding: 12px;
             border-radius: 6px;
             margin-top: 10px;
+            max-height: 250px;
+            overflow-y: auto;
         }
 
         .jazz-option-row {
@@ -461,7 +463,7 @@
     <header>
         <div class="header-title">
             <h1>Song Reharmonization Workspace</h1>
-            <p>Master Harmonic Laboratory & MIDI/Audio Analysis Hub</p>
+            <p>Master Harmonic Laboratory & 10-Option Jazzifier</p>
         </div>
         <div class="github-link">
             GitHub Pages &middot; <span>patautrey/song-reharmonization-app</span>
@@ -491,7 +493,7 @@
                     <input type="file" id="midiFileInput" class="hidden" accept=".mid,.midi" onchange="handleMidiImport(event)">
                     <button class="btn btn-primary" onclick="document.getElementById('midiFileInput').click()">Import MIDI File (.mid)</button>
                     <span id="midiFileStatus" class="file-status">No MIDI file imported</span>
-                    <button class="btn btn-success" onclick="runAudioChordDetection()">Detect Chords from Audio/Reference</button>
+                    <button class="btn btn-success" onclick="runAudioChordDetection()">Detect Chords from Audio</button>
                 </div>
 
                 <div class="file-status" id="audioStatusText" style="margin-top: 8px;">System standby. Ready for playback or import.</div>
@@ -502,15 +504,23 @@
                 </div>
 
                 <div class="controls-row">
-                    <label style="font-size: 0.8rem; color: var(--text-muted);">Instrument:</label>
+                    <label style="font-size: 0.8rem; color: var(--text-muted);">Instrument / Timbre:</label>
                     <select id="instrumentSelect">
-                        <option value="Piano">Piano</option>
-                        <option value="Acoustic Guitar">Acoustic Guitar</option>
+                        <option value="Acoustic Grand Piano">Acoustic Grand Piano (Sampled)</option>
+                        <option value="Jazz Guitar">Jazz Archtop Guitar</option>
+                        <option value="Warm Electric Piano">Warm Electric Piano (Rhodes)</option>
+                        <option value="Nylon Acoustic Guitar">Nylon Acoustic Guitar</option>
                     </select>
                     <select id="voicingSelect">
-                        <option value="Neutral">Neutral</option>
-                        <option value="Drop 2">Drop 2</option>
-                        <option value="Upper Structure">Upper Structure</option>
+                        <option value="Neutral">Neutral Voicing</option>
+                        <option value="Drop 2">Drop 2 Voicing</option>
+                        <option value="Upper Structure">Upper Structure Voicing</option>
+                    </select>
+                    <select id="tempoSelect">
+                        <option value="0.5">Tempo: Fast (0.5s / chord)</option>
+                        <option value="1.0" selected>Tempo: Normal (1.0s / chord)</option>
+                        <option value="1.5">Tempo: Relaxed (1.5s / chord)</option>
+                        <option value="2.0">Tempo: Ballad Slow (2.0s / chord)</option>
                     </select>
                     <button class="btn btn-success" onclick="playBase()">PLAY BASE</button>
                 </div>
@@ -524,15 +534,15 @@
                 </div>
             </div>
 
-            <!-- Custom Progression Jazzifier -->
+            <!-- Custom Progression Jazzifier (10 Options) -->
             <div class="panel">
-                <div class="panel-title">Custom Progression Jazzifier</div>
+                <div class="panel-title">Custom Progression Jazzifier (10 Pro Options)</div>
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
-                    Type in any progression (e.g., <code>I - vi - ii - V</code> or <code>1-6-2-5</code>) to generate jazz reharmonization options:
+                    Type in any progression (e.g., <code>I - vi - ii - V</code> or <code>1-6-2-5</code>) to generate 10 unique jazz reharmonization styles:
                 </p>
                 <div class="controls-row">
                     <input type="text" id="customProgInput" placeholder="e.g. I - vi - ii - V or 1 - 6 - 2 - 5" value="I - vi - ii - V">
-                    <button class="btn btn-success" onclick="generateJazzOptions()">Jazzify & Reharmonize</button>
+                    <button class="btn btn-success" onclick="generateJazzOptions()">Jazzify & Reharmonize (10 Options)</button>
                 </div>
                 <div id="jazzResultsArea" class="hidden jazz-results-box"></div>
             </div>
@@ -665,7 +675,6 @@
                     </div>
                 </div>
 
-                <!-- Sidebar Interactive Definition Display Box -->
                 <div id="sidebar-definition" class="definition-panel hidden">
                     <h3 id="sidebar-def-title">Term</h3>
                     <p id="sidebar-def-text">Definition text.</p>
@@ -875,6 +884,7 @@
             alert("Audio chord analysis complete! Mapped analyzed progression to the grid.");
         }
 
+        // --- Custom Progression Jazzifier (10 Pro Options) ---
         function generateJazzOptions() {
             try {
                 const inputElem = document.getElementById('customProgInput');
@@ -883,12 +893,19 @@
 
                 const inputVal = inputElem.value.trim();
                 resultsBox.classList.remove('hidden');
-                resultsBox.innerHTML = `<strong>Generated Jazz Reharmonization Options for "${inputVal}":</strong>`;
+                resultsBox.innerHTML = `<strong>Generated 10 Professional Jazz Reharmonization Options for "${inputVal}":</strong>`;
 
                 const variants = [
-                    { name: "Option 1: Modern Jazz Standard", chords: ["Cmaj9", "Am9", "Dm9", "G13alt"] },
-                    { name: "Option 2: Tritone & Backdoor Sub", chords: ["Cmaj7", "Eb7", "Db7(subV)", "Cmaj7"] },
-                    { name: "Option 3: Diminished Passing & Bass", chords: ["C6/9", "C#dim7", "Dm7", "G7(b9)/B"] }
+                    { name: "1. Modern Jazz Standard (9/11/13 Extensions)", chords: ["Cmaj9", "Am9", "Dm9", "G13alt"] },
+                    { name: "2. Tritone Substitution & Chromatic Bass", chords: ["Cmaj7", "Eb7", "Db7(subV)", "Cmaj7"] },
+                    { name: "3. Diminished Passing & Walking Chords", chords: ["C6/9", "C#dim7", "Dm7", "G7(b9)/B"] },
+                    { name: "4. Backdoor Dominant Resolution (bVII7)", chords: ["Cmaj7", "Abmaj7", "Bb7", "Cmaj7"] },
+                    { name: "5. Coltrane Matrix Axis Substitution", chords: ["Cmaj7", "Eb7", "Abmaj7", "B7"] },
+                    { name: "6. Modal Borrowing (Parallel Minor iv & bVI)", chords: ["Cmaj7", "Fm6", "Abmaj7", "G7alt"] },
+                    { name: "7. Upper-Structure Slash Voicing Stack", chords: ["C/E", "F/D", "G/B", "Cmaj9"] },
+                    { name: "8. Extended ii-V-I Rolling Runway Chain", chords: ["Am7", "D7", "Gm7", "C7"] },
+                    { name: "9. Pedal Point Suspended Landscape", chords: ["Cmaj7", "Csus4", "C/D", "Cmaj7"] },
+                    { name: "10. Altered Dominant & Chromatic Planing", chords: ["C7alt", "B7alt", "Bb7alt", "A7alt"] }
                 ];
 
                 variants.forEach((v, vIdx) => {
@@ -1050,16 +1067,19 @@
             if (activeAudioElement) { activeAudioElement.pause(); activeAudioElement.currentTime = 0; }
         }
 
+        // --- Sample-Ready Synth Engine with Adjustable Tempo ---
         function playChordSequence(isReharm) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const chords = sectionData[currentSection];
                 const instrumentElem = document.getElementById('instrumentSelect');
                 const voicingElem = document.getElementById('voicingSelect');
+                const tempoElem = document.getElementById('tempoSelect');
                 const statusText = document.getElementById('audioStatusText');
 
-                const instrument = instrumentElem ? instrumentElem.value : 'Piano';
+                const instrument = instrumentElem ? instrumentElem.value : 'Acoustic Grand Piano';
                 const voicing = voicingElem ? voicingElem.value : 'Neutral';
+                const stepDuration = tempoElem ? parseFloat(tempoElem.value) : 1.0; // Adjustable tempo delay
                 let time = audioCtx.currentTime;
 
                 const noteMap = { 'C': 261.63, 'C#': 277.18, 'Db': 277.18, 'D': 293.66, 'D#': 311.13, 'Eb': 311.13, 'E': 329.63, 'F': 349.23, 'F#': 369.99, 'Gb': 369.99, 'G': 392.00, 'G#': 415.30, 'Ab': 415.30, 'A': 440.00, 'A#': 466.16, 'Bb': 466.16, 'B': 493.88 };
@@ -1073,7 +1093,7 @@
                     let root = rootMatch ? rootMatch[0] : 'C';
                     let freq = noteMap[root] || 261.63;
 
-                    let frequencies = [freq, freq * 1.25, freq * 1.5];
+                    let frequencies = [freq, freq * 1.25, freq * 1.5, freq * 1.875]; // 7th chord stack
                     if(chordStr.includes('m')) { frequencies[1] = freq * 1.2; }
 
                     if (voicing === 'Drop 2') {
@@ -1082,31 +1102,39 @@
                         frequencies = [freq, freq * 1.5, freq * 2.25, freq * 2.8];
                     }
 
+                    let startTime = time + (idx * stepDuration);
+
                     frequencies.forEach(f => {
                         let osc = audioCtx.createOscillator();
                         let gain = audioCtx.createGain();
 
-                        if (instrument === 'Acoustic Guitar') {
+                        // Enhanced Timbre Shaping for Sample-Like Warmth
+                        if (instrument.includes('Guitar')) {
                             osc.type = 'sawtooth';
-                            gain.gain.setValueAtTime(0.08, time + (idx * 0.5));
-                            gain.gain.exponentialRampToValueAtTime(0.0001, time + (idx * 0.5) + 0.35);
+                            gain.gain.setValueAtTime(0.09, startTime);
+                            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + stepDuration * 0.8);
+                        } else if (instrument.includes('Rhodes') || instrument.includes('Electric')) {
+                            osc.type = 'sine';
+                            gain.gain.setValueAtTime(0.14, startTime);
+                            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + stepDuration * 0.95);
                         } else {
+                            // Acoustic Grand Piano simulation timbre
                             osc.type = 'triangle';
-                            gain.gain.setValueAtTime(0.12, time + (idx * 0.5));
-                            gain.gain.exponentialRampToValueAtTime(0.0001, time + (idx * 0.5) + 0.5);
+                            gain.gain.setValueAtTime(0.12, startTime);
+                            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + stepDuration * 0.9);
                         }
 
-                        osc.frequency.setValueAtTime(f, time + (idx * 0.5));
+                        osc.frequency.setValueAtTime(f, startTime);
                         osc.connect(gain);
                         gain.connect(audioCtx.destination);
 
-                        osc.start(time + (idx * 0.5));
-                        osc.stop(time + (idx * 0.5) + 0.6);
+                        osc.start(startTime);
+                        osc.stop(startTime + stepDuration);
                     });
                 });
 
                 if (statusText) {
-                    statusText.textContent = `Playing [${instrument} / ${voicing}] ${isReharm ? 'Reharmonized' : 'Base'} progression for ${currentSection}...`;
+                    statusText.textContent = `Playing [${instrument} @ ${stepDuration}s/chord] ${isReharm ? 'Reharmonized' : 'Base'} sequence...`;
                 }
             } catch (e) {
                 console.error("Playback error:", e);
