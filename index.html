@@ -704,15 +704,28 @@
                     </div>
                 </div>
 
-                <div class="action-row" style="margin-top: 16px;">
-                    <button class="btn btn-secondary" onclick="suggestReharm()">SUGGEST REHARM</button>
+                <!-- Targeted Reharmonization Intent Toolbar -->
+                <div class="controls-row" style="margin-top: 16px; background: rgba(56, 189, 248, 0.08); border: 1px solid var(--accent-blue); padding: 12px; border-radius: 6px;">
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display:block;">Targeted Reharm Style:</label>
+                        <select id="reharmStyleSelect">
+                            <option value="ModernJazz" selected>Modern Jazz Extensions (9/11/13)</option>
+                            <option value="TritoneSub">Tritone Substitution (subV7)</option>
+                            <option value="Backdoor">Backdoor Resolution (bVII7)</option>
+                            <option value="ModalBorrow">Modal Interchange / Borrowing (iv, bVI)</option>
+                            <option value="UpperStructure">Upper Structure Stack Voicings</option>
+                            <option value="ChromaticPlaning">Chromatic Planing / Parallelism</option>
+                            <option value="DiminishedWalk">Diminished Passing & Walking Chords</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="suggestTargetedReharm()">APPLY TARGETED REHARM</button>
                     <button class="btn btn-success" onclick="runVoiceLeadingAudit()">RUN VOICE AUDIT</button>
-                    <button class="btn btn-danger" onclick="clearHighlights()">CLEAR HIGHLIGHTS</button>
+                    <button class="btn btn-danger" onclick="clearHighlights()" style="margin-left: auto;">CLEAR</button>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column Sidebar Glossary (All 7 Categories Restored) -->
+        <!-- Right Column Sidebar Glossary -->
         <div>
             <div class="panel">
                 <div class="panel-title">Theory Glossary</div>
@@ -807,7 +820,7 @@
             "Chromatic Dominants": "Dominant chord qualities moved in parallel or chromatic steps outside the home key signature.",
             "Backdoor Dominant": "A subdominant dominant chord built on bVII7 resolving directly to the tonic.",
             "Modal Parallel Borrowing": "Borrowing chords from parallel modes to enrich emotional color.",
-            "Exotic Modes": "Non-diatonic scales like Hungarian Minor, Double Harmonic, Hirajoshi, and Prometheus that generate unique, striking chord intervals and colors.",
+            "Exotic Modes": "Non-diatonic scales like Hungarian Minor, Double Harmonic, and Prometheus that generate unique, striking chord intervals and colors.",
             "Poly Chords": "Superimposing two distinct triad or seventh chord structures simultaneously.",
             "Upper Structures": "Voicing triads derived from upper extensions over a lower dominant shell.",
             "Drop 2 Voicing": "Chord voicing where the second note from the top is dropped an octave down.",
@@ -991,7 +1004,6 @@
                 const levels = ["Level 1 (Triads)", "Level 2 (Basic 7ths)", "Level 3 (Extensions)", "Level 4 (Advanced)", "Level 5 (Standard Jazz)", "Level 6 (Chromatic)", "Level 7 (Altered)", "Level 8 (Modal Sub)", "Level 9 (Poly Chords)", "Level 10 (Master Lab)"];
                 label.textContent = levels[val - 1] || `Level ${val}`;
             }
-            suggestReharm();
         }
 
         function applyGlobalTransposition() {
@@ -1043,15 +1055,35 @@
             alert(`Loaded "${variant.name}" into ${currentSection}!`);
         }
 
-        function suggestReharm() {
+        // Targeted Reharmonization Intent Processor
+        function suggestTargetedReharm() {
+            const style = document.getElementById('reharmStyleSelect').value;
             const measures = sectionData[currentSection];
             if (!measures) return;
+
             measures.forEach((m, idx) => {
                 if (!m.active || m.base === '-') return;
                 let root = m.base.replace(/m|7|maj|dim/g, '');
-                m.reharm = (idx % 2 === 0) ? root + 'maj9' : root + '13alt';
+                
+                if (style === 'ModernJazz') {
+                    m.reharm = (idx % 2 === 0) ? root + 'maj9' : root + '13alt';
+                } else if (style === 'TritoneSub') {
+                    m.reharm = (idx % 2 === 1) ? 'Db7(subV)' : root + 'maj7';
+                } else if (style === 'Backdoor') {
+                    m.reharm = (idx % 2 === 1) ? 'Bb7' : root + 'maj7';
+                } else if (style === 'ModalBorrow') {
+                    m.reharm = (idx % 2 === 1) ? 'Fm6' : root + 'maj7';
+                } else if (style === 'UpperStructure') {
+                    m.reharm = root + '/E';
+                } else if (style === 'ChromaticPlaning') {
+                    m.reharm = root + 'maj7';
+                } else if (style === 'DiminishedWalk') {
+                    m.reharm = (idx % 2 === 1) ? root + 'dim7' : root + 'm7';
+                }
             });
+
             renderMeasures();
+            alert(`Applied targeted reharmonization style: ${style} to active measures in ${currentSection}!`);
         }
 
         function selectMeasure(idx) {
