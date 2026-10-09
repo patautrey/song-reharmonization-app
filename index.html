@@ -564,8 +564,16 @@
                                 <option value="Enigmatic">Enigmatic Scale</option>
                                 <option value="Prometheus">Prometheus Scale</option>
                                 <option value="Pelog">Pelog / In Scale</option>
+                                <option value="Hirajoshi">Hirajoshi Scale</option>
+                                <option value="Iwato">Iwato Scale</option>
+                                <option value="Balinese">Balinese Pelog</option>
+                                <option value="NeapolitanMajor">Neapolitan Major</option>
+                                <option value="NeapolitanMinor">Neapolitan Minor</option>
+                                <option value="Persian">Persian Scale</option>
+                                <option value="LydianAugmented">Lydian Augmented</option>
+                                <option value="LocrianNatural6">Locrian Natural 6 (#2)</option>
+                                <option value="SuperLocrian">Super Locrian (Altered)</option>
                                 <option value="WholeTone">Whole Tone Scale</option>
-                                <option value="DiminishedHalfWhole">Diminished (Half-Whole)</option>
                             </optgroup>
                         </select>
                     </div>
@@ -704,16 +712,18 @@
             </div>
         </div>
 
-        <!-- Right Column Sidebar Glossary -->
+        <!-- Right Column Sidebar Glossary (All 7 Categories Restored) -->
         <div>
             <div class="panel">
                 <div class="panel-title">Theory Glossary</div>
+                
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <div class="glossary-card" style="margin-bottom:0;">
                         <h4>Dominant Alterations</h4>
                         <ul>
                             <li onclick="showDefinition('Tritone Substitution')">Tritone Substitution</li>
                             <li onclick="showDefinition('Secondary Dominants')">Secondary Dominants</li>
+                            <li onclick="showDefinition('Chromatic Dominants')">Chromatic Dominants</li>
                             <li onclick="showDefinition('Backdoor Dominant')">Backdoor Dominant</li>
                         </ul>
                     </div>
@@ -722,18 +732,58 @@
                         <ul>
                             <li onclick="showDefinition('Modal Parallel Borrowing')">Modal Parallel Borrowing</li>
                             <li onclick="showDefinition('Exotic Modes')">Exotic Modes & Scales</li>
+                            <li onclick="showDefinition('Poly Chords')">Poly Chords</li>
                             <li onclick="showDefinition('Upper Structures')">Upper Structures</li>
+                            <li onclick="showDefinition('Drop 2 Voicing')">Drop 2 Voicing</li>
                         </ul>
                     </div>
                     <div class="glossary-card" style="margin-bottom:0;">
-                        <h4>Turnarounds & Cadences</h4>
+                        <h4>Passing & Functional Shifts</h4>
+                        <ul>
+                            <li onclick="showDefinition('Diminished Passing Chords')">Diminished Passing Chords</li>
+                            <li onclick="showDefinition('Diatonic Substitution')">Diatonic Substitution</li>
+                            <li onclick="showDefinition('Relative Chord Intercept')">Relative Chord Intercept</li>
+                            <li onclick="showDefinition('Harmonic Prolongation')">Harmonic Prolongation</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Voice Leading & Basslines</h4>
+                        <ul>
+                            <li onclick="showDefinition('Pedal Tones')">Pedal Tones</li>
+                            <li onclick="showDefinition('Bass Walk-Ups')">Bass Walk-Ups</li>
+                            <li onclick="showDefinition('Bass Walk-Downs')">Bass Walk-Downs</li>
+                            <li onclick="showDefinition('Inversions (Slash Chords)')">Inversions (Slash Chords)</li>
+                            <li onclick="showDefinition('Non-Chord Tones')">Non-Chord Tones</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Turnarounds & Root Paths</h4>
                         <ul>
                             <li onclick="showDefinition('Circle of 5ths Cycle')">Circle of 5ths Cycle</li>
                             <li onclick="showDefinition('Standard Turnaround')">Standard Turnaround</li>
-                            <li onclick="showDefinition('ii-V-I Cadences')">ii-V-I Cadences</li>
+                            <li onclick="showDefinition('ii-V-I & ii°-V7-i Cadences')">ii-V-I & ii°-V7-i Cadences</li>
+                            <li onclick="showDefinition('iii-vi-ii-V-I Extended Chain')">iii-vi-ii-V-I Extended Chain</li>
+                            <li onclick="showDefinition('Andalusian Progression')">Andalusian Progression</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Color, Extensions & Cadences</h4>
+                        <ul>
+                            <li onclick="showDefinition('Extensions (9ths, 11ths, 13ths)')">Extensions (9ths, 11ths, 13ths)</li>
+                            <li onclick="showDefinition('Suspended (sus4 / sus2)')">Suspended (sus4 / sus2)</li>
+                            <li onclick="showDefinition('Perfect Authentic Cadence')">Perfect Authentic Cadence</li>
+                        </ul>
+                    </div>
+                    <div class="glossary-card" style="margin-bottom:0;">
+                        <h4>Figured Bass Inversions</h4>
+                        <ul>
+                            <li onclick="showDefinition('Figured Bass: 6 (Root Triad Inv)')">Figured Bass: 6 (Root Triad Inv)</li>
+                            <li onclick="showDefinition('Figured Bass: 6/4 (Second Inv)')">Figured Bass: 6/4 (Second Inv)</li>
+                            <li onclick="showDefinition('Figured Bass: 4/3 (7th Chord 2nd Inv)')">Figured Bass: 4/3 (7th Chord 2nd Inv)</li>
                         </ul>
                     </div>
                 </div>
+
                 <div id="sidebar-definition" class="definition-panel hidden">
                     <h3 id="sidebar-def-title">Term</h3>
                     <p id="sidebar-def-text">Definition text.</p>
@@ -754,13 +804,33 @@
         const harmonicDefinitions = {
             "Tritone Substitution": "Replacing a dominant 7th chord with another dominant 7th chord whose root is a tritone away, sharing guide tones.",
             "Secondary Dominants": "A dominant 7th chord resolving to a diatonic scale degree other than the tonic.",
+            "Chromatic Dominants": "Dominant chord qualities moved in parallel or chromatic steps outside the home key signature.",
             "Backdoor Dominant": "A subdominant dominant chord built on bVII7 resolving directly to the tonic.",
             "Modal Parallel Borrowing": "Borrowing chords from parallel modes to enrich emotional color.",
-            "Exotic Modes": "Non-diatonic scales like Hungarian Minor, Double Harmonic, and Prometheus that generate unique, striking chord intervals and colors.",
+            "Exotic Modes": "Non-diatonic scales like Hungarian Minor, Double Harmonic, Hirajoshi, and Prometheus that generate unique, striking chord intervals and colors.",
+            "Poly Chords": "Superimposing two distinct triad or seventh chord structures simultaneously.",
             "Upper Structures": "Voicing triads derived from upper extensions over a lower dominant shell.",
+            "Drop 2 Voicing": "Chord voicing where the second note from the top is dropped an octave down.",
+            "Diminished Passing Chords": "Fully diminished 7th chords inserted stepwise between diatonic chords.",
+            "Diatonic Substitution": "Replacing a chord with another diatonic chord sharing similar harmonic function.",
+            "Relative Chord Intercept": "Inserting a relative minor or major chord to interrupt expected cadences.",
+            "Harmonic Prolongation": "Stretching out harmonic function using pedal points or neighboring chords.",
+            "Pedal Tones": "Holding a single bass note constant while upper harmony changes.",
+            "Bass Walk-Ups": "Stepping the bass line upward stepwise between chord roots.",
+            "Bass Walk-Downs": "Stepping the bass line downward stepwise between chords.",
+            "Inversions (Slash Chords)": "Placing a chord tone other than the root in the bass.",
+            "Non-Chord Tones": "Melodic decorations creating temporary dissonance against underlying chords.",
             "Circle of 5ths Cycle": "Root progression moving downward by fifths for strong gravitational pull.",
             "Standard Turnaround": "Short chord progression at section ends cycling back smoothly to the top.",
-            "ii-V-I Cadences": "Fundamental jazz building block establishing tonal centers."
+            "ii-V-I & ii°-V7-i Cadences": "Fundamental jazz building block establishing tonal centers.",
+            "iii-vi-ii-V-I Extended Chain": "Extended descending cycle connecting diatonic functional harmonies.",
+            "Andalusian Progression": "Descending tetrachord progression famous in flamenco and classic rock.",
+            "Extensions (9ths, 11ths, 13ths)": "Adding higher stack intervals above seventh chords.",
+            "Suspended (sus4 / sus2)": "Replacing the 3rd of a chord with the 4th or 2nd scale degree.",
+            "Perfect Authentic Cadence": "V7 resolving to I in root position with the tonic in soprano.",
+            "Figured Bass: 6 (Root Triad Inv)": "First inversion triad denoted by figure 6.",
+            "Figured Bass: 6/4 (Second Inv)": "Second inversion triad denoted by figures 6 and 4.",
+            "Figured Bass: 4/3 (7th Chord 2nd Inv)": "Seventh chord in second inversion combining 4th and 3rd intervals."
         };
 
         const sectionData = {
