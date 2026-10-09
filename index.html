@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Song Reharmonization Workspace - Master Lab (16-Chord Grid)</title>
+    <title>Song Reharmonization Workspace - Master Lab (Flexible Measure Grid)</title>
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -282,7 +282,6 @@
             color: var(--text-main);
         }
 
-        /* Expanded 16-Chord Measure Grid (4 columns x 4 rows) */
         .measure-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -313,12 +312,36 @@
             box-shadow: 0 0 0 1px var(--accent-blue);
         }
 
+        /* Bypassed / Off state styling */
+        .measure-card.bypassed {
+            opacity: 0.4;
+            background-color: rgba(15, 23, 42, 0.6);
+            border-style: dashed;
+        }
+
         .measure-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 0.7rem;
             color: var(--text-muted);
             margin-bottom: 6px;
+        }
+
+        .toggle-btn {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            padding: 2px 6px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .measure-card.bypassed .toggle-btn {
+            background: var(--accent-red);
+            color: var(--text-main);
         }
 
         .measure-body {
@@ -467,7 +490,7 @@
     <header>
         <div class="header-title">
             <h1>Song Reharmonization Workspace</h1>
-            <p>Master Harmonic Laboratory & 16-Chord Arrangement Grid</p>
+            <p>Master Harmonic Laboratory & Flexible 16-Chord Grid</p>
         </div>
         <div class="github-link">
             GitHub Pages &middot; <span>patautrey/song-reharmonization-app</span>
@@ -551,7 +574,7 @@
                 <div id="jazzResultsArea" class="hidden jazz-results-box"></div>
             </div>
 
-            <!-- Song Arrangement Timeline & 16-Chord Editor -->
+            <!-- Song Arrangement Timeline & 16-Chord Editor with Active/Bypass Switches -->
             <div class="panel">
                 <div class="panel-title">Song Arrangement Timeline</div>
                 <div class="timeline-box">
@@ -570,7 +593,7 @@
                     </div>
                 </div>
 
-                <div class="panel-title" style="margin-top: 20px;">Section Chord Editor (16 Chords) & Voice-Leading Audit</div>
+                <div class="panel-title" style="margin-top: 20px;">Section Chord Editor (16 Chords with On/Off Switches)</div>
                 <div class="sections-bar" id="sectionsBar">
                     <div class="section-pill active" onclick="selectSection('INTRO')">INTRO</div>
                     <div class="section-pill" onclick="selectSection('VERSE 1')">VERSE 1</div>
@@ -593,7 +616,7 @@
                 </div>
 
                 <div id="voiceLeadingAudit" class="audit-box">
-                    <strong>Voice-Leading Audit:</strong> All intervals and voice motions for active section are clean.
+                    <strong>Voice-Leading Audit:</strong> All active measure intervals and voice motions are clean.
                 </div>
 
                 <div class="action-row" style="margin-top: 16px;">
@@ -723,77 +746,77 @@
             "Figured Bass: 5/2 (7th Chord 3rd Inv)": "Seventh chord in third inversion (seventh in the bass), with the seventh placed in the lowest voice demanding immediate downward resolution."
         };
 
-        // Expanded 16-Chord Section Data Structure
+        // Section Data with active status property ('active: true/false') for every measure
         const sectionData = {
             'INTRO': [
-                { m: 1, base: 'G', reharm: 'G', roman: 'I' }, { m: 2, base: 'Em', reharm: 'Em', roman: 'vi' },
-                { m: 3, base: 'C', reharm: 'C', roman: 'IV' }, { m: 4, base: 'D', reharm: 'D', roman: 'V' },
-                { m: 5, base: 'G', reharm: 'Gmaj7', roman: 'I' }, { m: 6, base: 'Em', reharm: 'Em7', roman: 'vi' },
-                { m: 7, base: 'C', reharm: 'Cmaj9', roman: 'IV' }, { m: 8, base: 'D7', reharm: 'D9', roman: 'V' },
-                { m: 9, base: 'G', reharm: 'G6', roman: 'I' }, { m: 10, base: 'Bm', reharm: 'Bm7', roman: 'iii' },
-                { m: 11, base: 'C', reharm: 'Cmaj7', roman: 'IV' }, { m: 12, base: 'D', reharm: 'D13', roman: 'V' },
-                { m: 13, base: 'G', reharm: 'Gmaj9', roman: 'I' }, { m: 14, base: 'Am', reharm: 'Am9', roman: 'ii' },
-                { m: 15, base: 'D7', reharm: 'D7alt', roman: 'V' }, { m: 16, base: 'G', reharm: 'G', roman: 'I' }
+                { m: 1, base: 'G', reharm: 'G', roman: 'I', active: true }, { m: 2, base: 'Em', reharm: 'Em', roman: 'vi', active: true },
+                { m: 3, base: 'C', reharm: 'C', roman: 'IV', active: true }, { m: 4, base: 'D', reharm: 'D', roman: 'V', active: true },
+                { m: 5, base: '-', reharm: '-', roman: '-', active: false }, { m: 6, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 7, base: '-', reharm: '-', roman: '-', active: false }, { m: 8, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ],
             'VERSE 1': [
-                { m: 1, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7' }, { m: 2, base: 'Bm', reharm: 'Bm7', roman: 'iiim7' },
-                { m: 3, base: 'C', reharm: 'Cmaj9', roman: 'IVmaj9' }, { m: 4, base: 'D7', reharm: 'D9', roman: 'V9' },
-                { m: 5, base: 'G', reharm: 'G6', roman: 'I6' }, { m: 6, base: 'Am', reharm: 'AonC#', roman: 'iim6' },
-                { m: 7, base: 'C/D', reharm: 'D13', roman: 'V13' }, { m: 8, base: 'G', reharm: 'Gmaj7', roman: 'I' },
-                { m: 9, base: 'Em', reharm: 'Em9', roman: 'vi' }, { m: 10, base: 'A7', reharm: 'A13', roman: 'V/V' },
-                { m: 11, base: 'D', reharm: 'Dmaj7', roman: 'V' }, { m: 12, base: 'D7', reharm: 'D7alt', roman: 'V7' },
-                { m: 13, base: 'G', reharm: 'Gmaj9', roman: 'I' }, { m: 14, base: 'C', reharm: 'Cmaj7', roman: 'IV' },
-                { m: 15, base: 'D7', reharm: 'D13', roman: 'V7' }, { m: 16, base: 'G', reharm: 'G', roman: 'I' }
+                { m: 1, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7', active: true }, { m: 2, base: 'Bm', reharm: 'Bm7', roman: 'iiim7', active: true },
+                { m: 3, base: 'C', reharm: 'Cmaj9', roman: 'IVmaj9', active: true }, { m: 4, base: 'D7', reharm: 'D9', roman: 'V9', active: true },
+                { m: 5, base: 'G', reharm: 'G6', roman: 'I6', active: true }, { m: 6, base: 'Am', reharm: 'AonC#', roman: 'iim6', active: true },
+                { m: 7, base: 'C/D', reharm: 'D13', roman: 'V13', active: true }, { m: 8, base: 'G', reharm: 'Gmaj7', roman: 'I', active: true },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ],
             'VERSE 2': [
-                { m: 1, base: 'G', reharm: 'G6', roman: 'I6' }, { m: 2, base: 'Bm', reharm: 'Bm9', roman: 'iiim9' },
-                { m: 3, base: 'C', reharm: 'Cmaj7', roman: 'IVmaj7' }, { m: 4, base: 'D7', reharm: 'D13', roman: 'V13' },
-                { m: 5, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7' }, { m: 6, base: 'Am', reharm: 'Am7', roman: 'iim7' },
-                { m: 7, base: 'C/D', reharm: 'D7', roman: 'V7' }, { m: 8, base: 'G', reharm: 'G6', roman: 'I' },
-                { m: 9, base: 'Em', reharm: 'Em9', roman: 'vi' }, { m: 10, base: 'A7', reharm: 'A13', roman: 'V/V' },
-                { m: 11, base: 'D', reharm: 'Dmaj7', roman: 'V' }, { m: 12, base: 'D7', reharm: 'D7alt', roman: 'V7' },
-                { m: 13, base: 'G', reharm: 'Gmaj9', roman: 'I' }, { m: 14, base: 'C', reharm: 'Cmaj7', roman: 'IV' },
-                { m: 15, base: 'D7', reharm: 'D13', roman: 'V7' }, { m: 16, base: 'G', reharm: 'G', roman: 'I' }
+                { m: 1, base: 'G', reharm: 'G6', roman: 'I6', active: true }, { m: 2, base: 'Bm', reharm: 'Bm9', roman: 'iiim9', active: true },
+                { m: 3, base: 'C', reharm: 'Cmaj7', roman: 'IVmaj7', active: true }, { m: 4, base: 'D7', reharm: 'D13', roman: 'V13', active: true },
+                { m: 5, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7', active: true }, { m: 6, base: 'Am', reharm: 'Am7', roman: 'iim7', active: true },
+                { m: 7, base: 'C/D', reharm: 'D7', roman: 'V7', active: true }, { m: 8, base: 'G', reharm: 'G6', roman: 'I', active: true },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ],
             'PRE-CHORUS': [
-                { m: 1, base: 'Am', reharm: 'Am9', roman: 'iim9' }, { m: 2, base: 'D', reharm: 'D7alt', roman: 'V7alt' },
-                { m: 3, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7' }, { m: 4, base: 'E7', reharm: 'E7#9', roman: 'V7/ii' },
-                { m: 5, base: 'Am', reharm: 'F#m7b5', roman: 'iim7b5' }, { m: 6, base: 'B7', reharm: 'B7b9', roman: 'V7/vi' },
-                { m: 7, base: 'Em', reharm: 'Em9', roman: 'vim9' }, { m: 8, base: 'D', reharm: 'D11', roman: 'V11' },
-                { m: 9, base: 'Am', reharm: 'Am9', roman: 'iim' }, { m: 10, base: 'D7', reharm: 'D13', roman: 'V' },
-                { m: 11, base: 'G', reharm: 'Gmaj7', roman: 'I' }, { m: 12, base: 'C', reharm: 'Cmaj7', roman: 'IV' },
-                { m: 13, base: 'F#m7b5', reharm: 'F#m7b5', roman: 'ii°' }, { m: 14, base: 'B7', reharm: 'B7alt', roman: 'V/vi' },
-                { m: 15, base: 'Em', reharm: 'Em9', roman: 'vi' }, { m: 16, base: 'D', reharm: 'D7', roman: 'V' }
+                { m: 1, base: 'Am', reharm: 'Am9', roman: 'iim9', active: true }, { m: 2, base: 'D', reharm: 'D7alt', roman: 'V7alt', active: true },
+                { m: 3, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7', active: true }, { m: 4, base: 'E7', reharm: 'E7#9', roman: 'V7/ii', active: true },
+                { m: 5, base: '-', reharm: '-', roman: '-', active: false }, { m: 6, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 7, base: '-', reharm: '-', roman: '-', active: false }, { m: 8, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ],
             'CHORUS': [
-                { m: 1, base: 'C', reharm: 'Cmaj7', roman: 'IVmaj7' }, { m: 2, base: 'D', reharm: 'Bm7', roman: 'iiim7' },
-                { m: 3, base: 'Em', reharm: 'Cmaj9', roman: 'IVmaj9' }, { m: 4, base: 'G', reharm: 'Am7', roman: 'iim7' },
-                { m: 5, base: 'C', reharm: 'F#m7b5', roman: 'iim7b5' }, { m: 6, base: 'D', reharm: 'B7', roman: 'V7/vi' },
-                { m: 7, base: 'G', reharm: 'Em', roman: 'vi' }, { m: 8, base: 'G', reharm: 'G', roman: 'I' },
-                { m: 9, base: 'C', reharm: 'Cmaj9', roman: 'IV' }, { m: 10, base: 'D', reharm: 'D13', roman: 'V' },
-                { m: 11, base: 'Em', reharm: 'Em9', roman: 'vi' }, { m: 12, base: 'G', reharm: 'G6', roman: 'I' },
-                { m: 13, base: 'C', reharm: 'Cmaj7', roman: 'IV' }, { m: 14, base: 'D7', reharm: 'D9', roman: 'V' },
-                { m: 15, base: 'G', reharm: 'Gmaj9', roman: 'I' }, { m: 16, base: 'G', reharm: 'G', roman: 'I' }
+                { m: 1, base: 'C', reharm: 'Cmaj7', roman: 'IVmaj7', active: true }, { m: 2, base: 'D', reharm: 'Bm7', roman: 'iiim7', active: true },
+                { m: 3, base: 'Em', reharm: 'Cmaj9', roman: 'IVmaj9', active: true }, { m: 4, base: 'G', reharm: 'Am7', roman: 'iim7', active: true },
+                { m: 5, base: 'C', reharm: 'F#m7b5', roman: 'iim7b5', active: true }, { m: 6, base: 'D', reharm: 'B7', roman: 'V7/vi', active: true },
+                { m: 7, base: 'G', reharm: 'Em', roman: 'vi', active: true }, { m: 8, base: 'G', reharm: 'G', roman: 'I', active: true },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ],
             'BRIDGE': [
-                { m: 1, base: 'Am', reharm: 'Fmaj7', roman: 'bVImaj7' }, { m: 2, base: 'D', reharm: 'Bbmaj7', roman: 'bVIImaj7' },
-                { m: 3, base: 'Bm', reharm: 'Ebmaj7', roman: 'bIIImaj7' }, { m: 4, base: 'Em', reharm: 'Abmaj7', roman: 'bVImaj7' },
-                { m: 5, base: 'C', reharm: 'Am7', roman: 'iim7' }, { m: 6, base: 'C#dim', reharm: 'C#dim7', roman: '#iv°7' },
-                { m: 7, base: 'D', reharm: 'D7', roman: 'V7' }, { m: 8, base: 'D7', reharm: 'D13', roman: 'V13' },
-                { m: 9, base: 'Am', reharm: 'Am9', roman: 'iim' }, { m: 10, base: 'D7', reharm: 'D7alt', roman: 'V' },
-                { m: 11, base: 'Gm', reharm: 'Gm9', roman: 'iv' }, { m: 12, base: 'C7', reharm: 'C13', roman: 'V/IV' },
-                { m: 13, base: 'F', reharm: 'Fmaj7', roman: 'bVI' }, { m: 14, base: 'Bb7', reharm: 'Bb13', roman: 'bVII' },
-                { m: 15, base: 'E7', reharm: 'E7alt', roman: 'V/ii' }, { m: 16, base: 'A7', reharm: 'A7alt', roman: 'V/V' }
+                { m: 1, base: 'Am', reharm: 'Fmaj7', roman: 'bVImaj7', active: true }, { m: 2, base: 'D', reharm: 'Bbmaj7', roman: 'bVIImaj7', active: true },
+                { m: 3, base: 'Bm', reharm: 'Ebmaj7', roman: 'bIIImaj7', active: true }, { m: 4, base: 'Em', reharm: 'Abmaj7', roman: 'bVImaj7', active: true },
+                { m: 5, base: 'C', reharm: 'Am7', roman: 'iim7', active: true }, { m: 6, base: 'C#dim', reharm: 'C#dim7', roman: '#iv°7', active: true },
+                { m: 7, base: 'D', reharm: 'D7', roman: 'V7', active: true }, { m: 8, base: 'D7', reharm: 'D13', roman: 'V13', active: true },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ],
             'OUTRO': [
-                { m: 1, base: 'G', reharm: 'Gmaj9', roman: 'Imaj9' }, { m: 2, base: 'C', reharm: 'Cm6', roman: 'ivm6' },
-                { m: 3, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7' }, { m: 4, base: 'G', reharm: 'G6/9', roman: 'I6/9' },
-                { m: 5, base: 'G', reharm: 'Gmaj7', roman: 'I' }, { m: 6, base: 'Em', reharm: 'Em7', roman: 'vi' },
-                { m: 7, base: 'C', reharm: 'Cmaj9', roman: 'IV' }, { m: 8, base: 'D', reharm: 'D13', roman: 'V' },
-                { m: 9, base: 'G', reharm: 'G6', roman: 'I' }, { m: 10, base: 'Am7', reharm: 'Am9', roman: 'ii' },
-                { m: 11, base: 'D7', reharm: 'D7alt', roman: 'V' }, { m: 12, base: 'G', reharm: 'Gmaj9', roman: 'I' },
-                { m: 13, base: 'G', reharm: 'G', roman: 'I' }, { m: 14, base: 'G', reharm: 'G', roman: 'I' },
-                { m: 15, base: 'G', reharm: 'G', roman: 'I' }, { m: 16, base: 'G', reharm: 'G', roman: 'I' }
+                { m: 1, base: 'G', reharm: 'Gmaj9', roman: 'Imaj9', active: true }, { m: 2, base: 'C', reharm: 'Cm6', roman: 'ivm6', active: true },
+                { m: 3, base: 'G', reharm: 'Gmaj7', roman: 'Imaj7', active: true }, { m: 4, base: 'G', reharm: 'G6/9', roman: 'I6/9', active: true },
+                { m: 5, base: '-', reharm: '-', roman: '-', active: false }, { m: 6, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 7, base: '-', reharm: '-', roman: '-', active: false }, { m: 8, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 9, base: '-', reharm: '-', roman: '-', active: false }, { m: 10, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 11, base: '-', reharm: '-', roman: '-', active: false }, { m: 12, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 13, base: '-', reharm: '-', roman: '-', active: false }, { m: 14, base: '-', reharm: '-', roman: '-', active: false },
+                { m: 15, base: '-', reharm: '-', roman: '-', active: false }, { m: 16, base: '-', reharm: '-', roman: '-', active: false }
             ]
         };
 
@@ -873,6 +896,25 @@
             renderTimeline();
         }
 
+        // --- Toggle Measure Active / Bypass State ---
+        function toggleMeasure(event, idx) {
+            event.stopPropagation(); // Prevent triggering card selection drawer
+            const measures = sectionData[currentSection];
+            if (measures && measures[idx]) {
+                measures[idx].active = !measures[idx].active;
+                if (!measures[idx].active) {
+                    measures[idx].base = '-';
+                    measures[idx].reharm = '-';
+                    measures[idx].roman = '-';
+                } else {
+                    measures[idx].base = 'Cmaj7';
+                    measures[idx].reharm = 'Cmaj9';
+                    measures[idx].roman = 'I';
+                }
+                renderMeasures();
+            }
+        }
+
         function handleMidiImport(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -880,6 +922,7 @@
             if (statusElem) statusElem.textContent = `Imported: ${file.name}`;
             const measures = sectionData[currentSection];
             if (measures && measures.length > 0) {
+                measures[0].active = true;
                 measures[0].base = 'Cmaj7';
                 measures[0].reharm = 'Cmaj9';
             }
@@ -892,15 +935,15 @@
             if (statusText) statusText.textContent = "Analyzing uploaded audio file structure...";
             
             const measures = sectionData[currentSection];
-            if (measures && measures.length >= 16) {
-                measures[0].base = 'Fmaj7'; measures[0].reharm = 'Fmaj9';
-                measures[1].base = 'Bb7'; measures[1].reharm = 'Bb13';
-                measures[2].base = 'Cmaj7'; measures[2].reharm = 'C6/9';
-                measures[3].base = 'C7'; measures[3].reharm = 'C7alt';
+            if (measures && measures.length >= 4) {
+                measures[0].active = true; measures[0].base = 'Fmaj7'; measures[0].reharm = 'Fmaj9';
+                measures[1].active = true; measures[1].base = 'Bb7'; measures[1].reharm = 'Bb13';
+                measures[2].active = true; measures[2].base = 'Cmaj7'; measures[2].reharm = 'C6/9';
+                measures[3].active = true; measures[3].base = 'C7'; measures[3].reharm = 'C7alt';
             }
             renderMeasures();
-            if (statusText) statusText.textContent = "Chord detection complete! Mapped detected audio chords to 16-bar grid.";
-            alert("Audio chord analysis complete! Mapped analyzed progression to the 16-bar grid.");
+            if (statusText) statusText.textContent = "Chord detection complete! Mapped detected audio chords.";
+            alert("Audio chord analysis complete! Mapped analyzed progression to active grid blocks.");
         }
 
         // --- Custom Progression Jazzifier (10 Pro Options) ---
@@ -915,24 +958,24 @@
                 resultsBox.innerHTML = `<strong>Generated 10 Professional Jazz Reharmonization Options for "${inputVal}":</strong>`;
 
                 const variants = [
-                    { name: "1. Modern Jazz Standard (9/11/13 Extensions)", chords: ["Cmaj9", "Am9", "Dm9", "G13alt", "Cmaj9", "Am9", "Dm9", "G13alt", "Cmaj9", "Am9", "Dm9", "G13alt", "Cmaj9", "Am9", "Dm9", "G13alt"] },
-                    { name: "2. Tritone Substitution & Chromatic Bass", chords: ["Cmaj7", "Eb7", "Db7(subV)", "Cmaj7", "Cmaj7", "Eb7", "Db7(subV)", "Cmaj7", "Cmaj7", "Eb7", "Db7(subV)", "Cmaj7", "Cmaj7", "Eb7", "Db7(subV)", "Cmaj7"] },
-                    { name: "3. Diminished Passing & Walking Chords", chords: ["C6/9", "C#dim7", "Dm7", "G7(b9)/B", "C6/9", "C#dim7", "Dm7", "G7(b9)/B", "C6/9", "C#dim7", "Dm7", "G7(b9)/B", "C6/9", "C#dim7", "Dm7", "G7(b9)/B"] },
-                    { name: "4. Backdoor Dominant Resolution (bVII7)", chords: ["Cmaj7", "Abmaj7", "Bb7", "Cmaj7", "Cmaj7", "Abmaj7", "Bb7", "Cmaj7", "Cmaj7", "Abmaj7", "Bb7", "Cmaj7", "Cmaj7", "Abmaj7", "Bb7", "Cmaj7"] },
-                    { name: "5. Coltrane Matrix Axis Substitution", chords: ["Cmaj7", "Eb7", "Abmaj7", "B7", "Cmaj7", "Eb7", "Abmaj7", "B7", "Cmaj7", "Eb7", "Abmaj7", "B7", "Cmaj7", "Eb7", "Abmaj7", "B7"] },
-                    { name: "6. Modal Borrowing (Parallel Minor iv & bVI)", chords: ["Cmaj7", "Fm6", "Abmaj7", "G7alt", "Cmaj7", "Fm6", "Abmaj7", "G7alt", "Cmaj7", "Fm6", "Abmaj7", "G7alt", "Cmaj7", "Fm6", "Abmaj7", "G7alt"] },
-                    { name: "7. Upper-Structure Slash Voicing Stack", chords: ["C/E", "F/D", "G/B", "Cmaj9", "C/E", "F/D", "G/B", "Cmaj9", "C/E", "F/D", "G/B", "Cmaj9", "C/E", "F/D", "G/B", "Cmaj9"] },
-                    { name: "8. Extended ii-V-I Rolling Runway Chain", chords: ["Am7", "D7", "Gm7", "C7", "Am7", "D7", "Gm7", "C7", "Am7", "D7", "Gm7", "C7", "Am7", "D7", "Gm7", "C7"] },
-                    { name: "9. Pedal Point Suspended Landscape", chords: ["Cmaj7", "Csus4", "C/D", "Cmaj7", "Cmaj7", "Csus4", "C/D", "Cmaj7", "Cmaj7", "Csus4", "C/D", "Cmaj7", "Cmaj7", "Csus4", "C/D", "Cmaj7"] },
-                    { name: "10. Altered Dominant & Chromatic Planing", chords: ["C7alt", "B7alt", "Bb7alt", "A7alt", "C7alt", "B7alt", "Bb7alt", "A7alt", "C7alt", "B7alt", "Bb7alt", "A7alt", "C7alt", "B7alt", "Bb7alt", "A7alt"] }
+                    { name: "1. Modern Jazz Standard (9/11/13 Extensions)", chords: ["Cmaj9", "Am9", "Dm9", "G13alt"] },
+                    { name: "2. Tritone Substitution & Chromatic Bass", chords: ["Cmaj7", "Eb7", "Db7(subV)", "Cmaj7"] },
+                    { name: "3. Diminished Passing & Walking Chords", chords: ["C6/9", "C#dim7", "Dm7", "G7(b9)/B"] },
+                    { name: "4. Backdoor Dominant Resolution (bVII7)", chords: ["Cmaj7", "Abmaj7", "Bb7", "Cmaj7"] },
+                    { name: "5. Coltrane Matrix Axis Substitution", chords: ["Cmaj7", "Eb7", "Abmaj7", "B7"] },
+                    { name: "6. Modal Borrowing (Parallel Minor iv & bVI)", chords: ["Cmaj7", "Fm6", "Abmaj7", "G7alt"] },
+                    { name: "7. Upper-Structure Slash Voicing Stack", chords: ["C/E", "F/D", "G/B", "Cmaj9"] },
+                    { name: "8. Extended ii-V-I Rolling Runway Chain", chords: ["Am7", "D7", "Gm7", "C7"] },
+                    { name: "9. Pedal Point Suspended Landscape", chords: ["Cmaj7", "Csus4", "C/D", "Cmaj7"] },
+                    { name: "10. Altered Dominant & Chromatic Planing", chords: ["C7alt", "B7alt", "Bb7alt", "A7alt"] }
                 ];
 
                 variants.forEach((v, vIdx) => {
                     let row = document.createElement('div');
                     row.className = 'jazz-option-row';
                     row.innerHTML = `
-                        <span><strong>${v.name}:</strong> ${v.chords.slice(0, 4).join(' → ')}...</span>
-                        <button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="loadVariantToCurrentSection(${vIdx})">Load 16 Chords</button>
+                        <span><strong>${v.name}:</strong> ${v.chords.join(' → ')}</span>
+                        <button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="loadVariantToCurrentSection(${vIdx})">Load into ${currentSection}</button>
                     `;
                     resultsBox.appendChild(row);
                 });
@@ -951,11 +994,13 @@
 
             variant.chords.forEach((c, idx) => {
                 if (measures[idx]) {
+                    measures[idx].active = true;
                     measures[idx].reharm = c;
+                    measures[idx].base = c.replace(/9|13|alt|maj7|m7/g, '');
                 }
             });
 
-            alert(`Loaded "${variant.name}" (16 chords) into ${currentSection}!`);
+            alert(`Loaded "${variant.name}" into active measures in ${currentSection}!`);
             renderMeasures();
         }
 
@@ -964,7 +1009,7 @@
             if (!measures) return;
 
             measures.forEach((m, idx) => {
-                if (m.base === '-') return;
+                if (!m.active || m.base === '-') return;
                 let root = m.base.replace(/m|7|maj|dim/g, '');
                 if (idx % 2 === 0) {
                     m.reharm = root + 'maj9';
@@ -976,13 +1021,16 @@
             renderMeasures();
             const auditBox = document.getElementById('voiceLeadingAudit');
             if (auditBox) {
-                auditBox.innerHTML = `<strong>Reharmonization Applied:</strong> Generated advanced 16-bar jazz extensions and altered dominants for ${currentSection}.`;
+                auditBox.innerHTML = `<strong>Reharmonization Applied:</strong> Generated advanced jazz extensions for active measures in ${currentSection}.`;
                 auditBox.style.borderColor = 'var(--accent-blue)';
             }
-            alert(`Generated intelligent reharmonization suggestions and applied them across all 16 measures in ${currentSection}!`);
+            alert(`Generated intelligent reharmonization suggestions for active measures in ${currentSection}!`);
         }
 
         function selectMeasure(idx) {
+            const measures = sectionData[currentSection];
+            if (!measures || !measures[idx].active) return; // Ignore clicks on bypassed measures
+
             selectedMeasureIndex = idx;
             renderMeasures();
             const drawer = document.getElementById('paletteDrawer');
@@ -1015,7 +1063,7 @@
         function runVoiceLeadingAudit() {
             const auditBox = document.getElementById('voiceLeadingAudit');
             if (auditBox) {
-                auditBox.innerHTML = `<strong>Voice-Leading Audit:</strong> All 16 intervals and voice motions for '${currentSection}' are clean.`;
+                auditBox.innerHTML = `<strong>Voice-Leading Audit:</strong> All active measure intervals and voice motions for '${currentSection}' are clean.`;
                 auditBox.style.borderColor = 'var(--accent-green)';
             }
         }
@@ -1030,12 +1078,12 @@
 
                 measures.forEach((m, idx) => {
                     const card = document.createElement('div');
-                    card.className = `measure-card ${selectedMeasureIndex === idx ? 'selected' : ''}`;
+                    card.className = `measure-card ${selectedMeasureIndex === idx ? 'selected' : ''} ${!m.active ? 'bypassed' : ''}`;
                     card.onclick = () => selectMeasure(idx);
                     card.innerHTML = `
                         <div class="measure-header">
                             <span>M.${m.m}</span>
-                            <span>${currentSection}</span>
+                            <button class="toggle-btn" onclick="toggleMeasure(event, ${idx})">${m.active ? 'ON' : 'OFF'}</button>
                         </div>
                         <div class="measure-body">
                             <div>
@@ -1086,89 +1134,9 @@
             if (activeAudioElement) { activeAudioElement.pause(); activeAudioElement.currentTime = 0; }
         }
 
+        // --- Synth Engine (Skips Bypassed / OFF Measures Automatically) ---
         function playChordSequence(isReharm) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const chords = sectionData[currentSection];
-                const instrumentElem = document.getElementById('instrumentSelect');
-                const voicingElem = document.getElementById('voicingSelect');
-                const tempoElem = document.getElementById('tempoSelect');
-                const statusText = document.getElementById('audioStatusText');
-
-                const instrument = instrumentElem ? instrumentElem.value : 'Acoustic Grand Piano';
-                const voicing = voicingElem ? voicingElem.value : 'Neutral';
-                const stepDuration = tempoElem ? parseFloat(tempoElem.value) : 1.0;
-                let time = audioCtx.currentTime;
-
-                const noteMap = { 'C': 261.63, 'C#': 277.18, 'Db': 277.18, 'D': 293.66, 'D#': 311.13, 'Eb': 311.13, 'E': 329.63, 'F': 349.23, 'F#': 369.99, 'Gb': 369.99, 'G': 392.00, 'G#': 415.30, 'Ab': 415.30, 'A': 440.00, 'A#': 466.16, 'Bb': 466.16, 'B': 493.88 };
-                if (!chords) return;
-
-                chords.forEach((c, idx) => {
-                    let chordStr = isReharm ? c.reharm : c.base;
-                    if (!chordStr || chordStr === '-') return;
-
-                    let rootMatch = chordStr.match(/^[A-G][b#]*/);
-                    let root = rootMatch ? rootMatch[0] : 'C';
-                    let freq = noteMap[root] || 261.63;
-
-                    let frequencies = [freq, freq * 1.25, freq * 1.5, freq * 1.875];
-                    if(chordStr.includes('m')) { frequencies[1] = freq * 1.2; }
-
-                    if (voicing === 'Drop 2') {
-                        frequencies = [freq * 0.5, freq * 1.5, freq * 2.0, freq * 2.5];
-                    } else if (voicing === 'Upper Structure') {
-                        frequencies = [freq, freq * 1.5, freq * 2.25, freq * 2.8];
-                    }
-
-                    let startTime = time + (idx * stepDuration);
-
-                    frequencies.forEach(f => {
-                        let osc = audioCtx.createOscillator();
-                        let gain = audioCtx.createGain();
-
-                        if (instrument.includes('Guitar')) {
-                            osc.type = 'sawtooth';
-                            gain.gain.setValueAtTime(0.09, startTime);
-                            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + stepDuration * 0.8);
-                        } else if (instrument.includes('Rhodes') || instrument.includes('Electric')) {
-                            osc.type = 'sine';
-                            gain.gain.setValueAtTime(0.14, startTime);
-                            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + stepDuration * 0.95);
-                        } else {
-                            osc.type = 'triangle';
-                            gain.gain.setValueAtTime(0.12, startTime);
-                            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + stepDuration * 0.9);
-                        }
-
-                        osc.frequency.setValueAtTime(f, startTime);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-
-                        osc.start(startTime);
-                        osc.stop(startTime + stepDuration);
-                    });
-                });
-
-                if (statusText) {
-                    statusText.textContent = `Playing [${instrument} @ ${stepDuration}s/chord] 16-bar sequence...`;
-                }
-            } catch (e) {
-                console.error("Playback error:", e);
-            }
-        }
-
-        function playBase() { playChordSequence(false); }
-        function playReharm() { playChordSequence(true); }
-
-        function exportWav() { alert('WAV export renderer initialized.'); }
-        function exportMultiTrackMidi() { alert('Multi-Track MIDI stems exported successfully! Ready for REAPER.'); }
-        function exportMusicXml() { alert('MusicXML score exported successfully.'); }
-        function clearHighlights() { selectedMeasureIndex = null; renderMeasures(); closePalette(); }
-
-        window.onload = function() {
-            renderMeasures();
-            renderTimeline();
-        };
-    </script>
-</body>
-</html>
+                const instrumentElem = document.getElementById
